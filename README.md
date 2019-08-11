@@ -1,2 +1,2 @@
 # stopwatch
-Simple go library to measure execution time
+Simple Go library to measure execution time
