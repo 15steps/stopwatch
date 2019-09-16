@@ -8,6 +8,8 @@ import (
 type StopWatch struct {
 	InitialTime time.Time
 	Time        float64
+	Laps		[]float64
+	lastLapTime time.Time
 }
 
 // CreateStarted create and start new StopWatch
@@ -53,6 +55,23 @@ func (s *StopWatch) GetElapsedAndReset() float64 {
 	s.InitialTime = time.Time{}
 	s.Time = 0
 	return elapsed
+}
+
+func (s *StopWatch) Lap() {
+	now := time.Now().UTC()
+	var elapsed float64
+	if s.lastLapTime.IsZero() {
+		elapsed = nanoToMilli(now.Sub(s.InitialTime).Nanoseconds())
+	} else {
+		elapsed = nanoToMilli(now.Sub(s.lastLapTime).Nanoseconds())
+	}
+	s.Laps = append(s.Laps, elapsed)
+	s.lastLapTime = now
+}
+
+func (s *StopWatch) LapAndStop() {
+	s.Lap()
+	s.Stop()
 }
 
 func nanoToMilli(nanoTime int64) float64 {
